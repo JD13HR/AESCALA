@@ -1,0 +1,7 @@
+.invalid{
+    @apply border-orange-600 text-orange-600
+}
+
+.valid{
+    @apply border-green-600 text-green-600
+}

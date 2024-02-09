@@ -1,0 +1,38 @@
+<div class="space-y-4">
+    <form [formGroup]="form_group" (submit)="submit()">
+        <div *ngFor="let section of inputs">
+            <hr class="my-4">
+
+            <h2 class="m-0 font-medium" id="title-page">{{section.title}}</h2>
+            <small>{{section.description}}</small>
+
+            <div class="mt-6 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" [style]="section.inputs.length == 1 ? 'grid-template-columns: 1fr' : ''">
+                <div *ngFor="let input of section.inputs" class="relative">
+                    <label for="{{input.name}}" class="text-gray-700 text-sm hover:text-gray-400 cursor-pointer " ><span class="mr-1 {{input.icon}}"></span>{{input.label | uppercase}}</label>
+                    <input 
+                        #input_form
+                        id="{{input.name}}"
+                        [value]="input.money == true ? (input_form.value | thousands ) : input_form.value"
+                        [checked]="input.value"
+                        [formControlName]="input.name"
+                        (change)="validate_input(input.name)"
+                        [ngClass]="{'w-full': input.attributes?.type != 'checkbox'}"
+                        class="block text-sm py-1.5 px-4 rounded-lg  border outline-none" 
+                    />
+                    <span *ngIf="input_form.classList.contains('invalid')" class="rounded-b-md rounded-l-md bg-red-600 text-white p-1 text-[.6rem] absolute -bottom-5 right-0"><span class="cil-warning mr-1"></span> ¡Incorrecto!</span>
+                </div>
+            </div>
+        </div>
+        <div class="mt-3 flex">
+            <div (click)="reset_values()" class="select-none bg-gradient-to-tr hover:shadow-xl text-center cursor-pointer text-white p-1 w-48 rounded from-gray-600 to-gray-300">
+                <span class="cil-x"></span> 
+                Cancelar
+            </div>
+
+            <button type="submit" class="hover:shadow-xl  ml-auto text-white w-48 p-1 rounded bg-gradient-to-tr from-orange-600 to-orange-300">
+                <span class="cil-cloud-upload"></span>
+                Envíar
+            </button>
+        </div>
+    </form>        
+</div>

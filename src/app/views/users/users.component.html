@@ -1,0 +1,94 @@
+<div>
+    <datalist id="datalistRoles">
+        <option *ngFor="let rol of datalistRoles" value="{{rol.rol_name}}"></option>
+    </datalist>
+
+    <div class="flex">
+        <span [ngClass]="!state_edith ? 'bg-orange-600' : 'bg-red-600'" class="ml-auto p-2 rounded-lg text-sm text-white font-semibold" id="toltipo-info">
+            {{!state_edith ? 'CREAR' : 'EDITAR'}}
+        </span>
+    </div>
+    
+    <app-form-dynamic
+        #form_dynamic
+        [inputs]="inputs"
+        (reset)="this.state_edith = false"
+        (submitEvent)="createUpdateUser($event)"
+    ></app-form-dynamic>
+
+    <br class="mt-3">
+    
+    <!--- CAMBIOS AGREGADOS - AUTOR: @JD13HR --->
+    <div class="w-full mx-auto">
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+            <div class="p-4">
+                <label for="table-search" class="sr-only">Search</label>
+                <div class="relative mt-1">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <span class="cil-search text-lg text-gray-500 dark:text-gray-400"></span>
+                    </div>
+                </div>
+            </div>
+    
+            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead class="w-full text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th *ngFor="let title of titles" scope="col" class="px-6 py-3">{{title}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of renderDataTable"  class="border-b {{item?.things.length < 1?'bg-red-400 text-black':'dark:bg-gray-800 dark:border-gray-700  dark:hover:bg-gray-600s' }} {{item?.styleClassTr?.length >= 1 ? item?.styleClassTr + ' hover:bg-opacity-40' : 'hover:bg-gray-400 hover:text-black'}}" id="datatable-body" >
+                        <td >
+                            {{item.nombre_completo}}
+                        </td>
+                        <td class="px-6 py-4 justify-center">
+                            {{item.cedula}}
+                        </td>
+                        <td class="px-6 py-4 justify-center">
+                            <select name="" id="" *ngIf="item.things.length>= 1" class="dark:bg-gray-800 dark:border-gray-700  dark:hover:bg-gray-600s text-white">
+                                <option value="project" *ngFor="let project of item.things" >{{project}}</option>
+                            </select>
+                        </td>
+                        <td class="px-6 py-4 justify-center">
+                            {{item.correo}}
+                        </td>
+                        <td class="px-6 py-4 justify-center">
+                            {{item.telefono}}
+                        </td>
+                        <td class="px-6 py-4 justify-center">
+                            {{item.direccion}}
+                        </td>
+                        <td class="px-6 py-4 justify-center">
+                            {{item.rol_name}}
+                        </td>
+                        <td class="px-6 py-4 justify-center">
+                            {{item.activo}}
+                        </td>
+    
+                        <td  class="px-6 py-4 justify-center">
+                            <span *ngFor="let button of buttons" (click)="output_click({button, data: item})"  class="{{button.icon}} {{button.class}} text-lg hover:text-orange-600 cursor-pointer "></span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- <app-datatable
+        #datatableUsers
+        (clickEmit)="handlerEdith($event)"
+        [keys]="['nombre_completo', 'cedula', 'things','correo', 'telefono', 'direccion', 'rol_name', 'activo']"
+        [buttons]="[{icon: 'cil-pencil', text: '', id: 2}]"
+        [titles]="['nombre', 'cédula', 'proyectos', 'correo', 'teléfono', 'dirección', 'rol', 'activo', 'opciones']"
+    ></app-datatable> -->
+    <!--- CAMBIOS AGREGADOS - AUTOR: @JD13HR --->
+
+</div>
+
+<app-modal #modalUsers [size]="1">
+    <h3 class="font-semibold text-xl mb-2">Tenemos problemas al realizar la acción</h3>
+    <p><span class="mr-2 cil-notes text-xl"></span> {{message_server}}</p>
+</app-modal>
+
+<app-alert #alert_users></app-alert>
+<app-loading *ngIf="loading"></app-loading>

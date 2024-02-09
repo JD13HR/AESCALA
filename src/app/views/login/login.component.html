@@ -1,0 +1,37 @@
+<!-- Container -->
+<div class="flex flex-wrap min-h-screen w-full content-center justify-center bg-slate-100 py-10">
+	<!-- Login component -->
+	<div class="flex shadow-md">
+	  <!-- Login form -->
+	  <div class="flex flex-wrap relative content-center justify-center rounded-l-md bg-white" style="width: 24rem; height: 32rem; box-shadow: 40px 0px 30px rgb(255, 255, 255); ">
+		<div class="w-72">
+			<!-- Heading -->
+			<img class="absolute top-6 right-5 w-20" src="assets/brand/logo.png">
+
+			<h1 class="text-3xl font-bold cursor-pointer">Iniciar Sesión</h1>
+			<small class="text-gray-400">¡Bienvenido!, ingresa tus credenciales para poder continuar</small>
+
+			<!-- Form -->
+			<form class="mt-8" [formGroup]="formulario" (submit)="login()">
+				<div class="space-y-4">
+					<input formControlName="correo" type="text" placeholder="Correo" class="block text-sm py-3 px-4 rounded-lg w-full border outline-none" />
+					<input formControlName="pass" type="password" placeholder="Contraseña" class="block text-sm py-3 px-4 rounded-lg w-full border outline-none" />
+				</div>
+				
+				<div class="mt-4">
+					<button type="submit" class="mb-1.5 block w-full text-center px-2 btn-primary">Ingresar</button>
+				</div> 
+			</form>
+		</div>
+	  </div>
+  
+	  <!-- Login banner -->
+	  <div class="flex flex-wrap content-center justify-center rounded-r-md" style="width: 24rem; height: 32rem;">
+		<img class="w-full h-full bg-center bg-no-repeat bg-cover rounded-r-md object-cover" src="assets/images/banner.jpg">
+	  </div>
+	</div>
+</div>
+<app-alert #alert_users></app-alert>
+<app-loading *ngIf="loading"></app-loading>
+
+<!-- <div class="min-h-screen bg-purple-400 flex justify-center items-center"></div> -->

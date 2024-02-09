@@ -1,0 +1,61 @@
+<div class="h-full">
+    <div class="flex flex-no-wrap h-screen">
+
+        <div style="min-height: 500px" class="w-72 absolute sm:relative bg-gray-800 shadow md:h-full flex-col justify-between hidden sm:flex">
+            <div class="px-4 flex flex-col items-center h-full">
+                <img class="mt-6 w-48" src="assets/brand/logo.png">
+
+                <ul class="mt-12 w-full">
+                    <li *ngFor="let item of navItems" [ngClass]="currentPage == item.url ? 'bg-gray-600 text-white': 'hover:bg-gray-700 text-gray-300'" class="flex w-full items-center  cursor-pointer mb-2 p-2 rounded" [routerLink]="[item.url]" >
+                        <span class="w-5 h-5 {{item.icon}}" ></span>
+                        <p class="text-sm ml-2">{{item.title}}</p>
+                        <div *ngIf="item.notifications" class="ml-auto py-1 px-3 bg-gray-600 rounded text-gray-300 text-xs">{{item.notifications}}</div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- // ---------------------------- footer -----------------------------------// -->
+
+            <div class="px-8 border-t border-gray-700">
+                <ul class="w-full flex items-center justify-between bg-gray-800">
+                    <li class="cursor-pointer text-gray-500 pt-5 pb-3">
+                        <button aria-label="show notifications" class="focus:outline-none focus:ring-2 rounded focus:ring-gray-300">
+                            <svg  xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-bell" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z"></path>
+                                <path d="M10 5a2 2 0 0 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"></path>
+                                <path d="M9 17v1a3 3 0 0 0 6 0v-1"></path>
+                            </svg>
+                        </button>
+                    </li>
+                    <li class="cursor-pointer text-gray-500 pt-5 pb-3">
+                        <button aria-label="open chats" class="focus:outline-none focus:ring-2 rounded focus:ring-gray-300">
+                            <svg  xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-messages" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z"></path>
+                                <path d="M21 14l-3 -3h-7a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1h9a1 1 0 0 1 1 1v10"></path>
+                                <path d="M14 15v2a1 1 0 0 1 -1 1h-7l-3 3v-10a1 1 0 0 1 1 -1h2"></path>
+                            </svg>
+                        </button>
+                    </li>
+                    <li class="cursor-pointer text-gray-500 pt-5 pb-3">
+                        <button aria-label="open settings" class="focus:outline-none focus:ring-2 rounded focus:ring-gray-300">
+                            <svg  xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-settings" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z"></path>
+                                <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </li>
+                    <li class="cursor-pointer text-white pt-5 pb-3">
+                        <button (click)="logout()" aria-label="open logs" class="focus:outline-none focus:ring-2 rounded focus:ring-gray-300">
+                            <span class="cil-input"></span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <main class="p-4 w-[calc(100%-230px)] max-h-full overflow-y-auto" id="main">
+            <router-outlet></router-outlet>
+        </main>
+    </div>     
+</div>

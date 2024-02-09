@@ -1,0 +1,66 @@
+<div>
+    <div class="flex">
+        <span [ngClass]="!state_edith ? 'bg-orange-600' : 'bg-red-600'" class="ml-auto p-2 rounded-lg text-sm text-white font-semibold" id="toltipo-info">
+            {{!state_edith ? 'CREAR' : 'EDITAR'}}
+        </span>
+    </div>
+
+    <datalist id="datalist_estados">
+        <option value="Nuevo">
+        <option value="Bueno">
+        <option value="Regular">
+        <option value="Dado de baja">
+    </datalist>
+
+    <datalist id="datalist_user">
+        <option *ngFor="let user of list_users" value="{{user.nombre_completo | uppercase}}">
+    </datalist>
+
+    <datalist id="datalist_tipo_prestamo">
+        <option value="Prestamo">
+        <option value="Devolucion">
+    </datalist>
+
+    <app-form-dynamic
+        #form_dynamic
+        [inputs]="inputs"
+        (reset)="handler_reset()"
+        (submitEvent)="create_or_update($event);"
+    ></app-form-dynamic>
+
+    <app-datatable
+        #datatableHerramientas
+        [buttons]="[{icon: 'cil-pencil', text: '', id: 2}, {icon: 'cil-user-follow', text: '', id: 1}]"
+        [keys]="['nombre_herramienta','referencia','marca','estado','codigo', 'estado_prestado', 'prestatario', 'observacion' ]"
+        [titles]="['Herramienta', 'Referencia', 'Marca', 'Estado', 'codigo', 'Prestamo', 'prestatario', 'observacion', 'opciones']"
+        (clickEmit)="$event.button.id == 2 ? load_update($event.data) : open_modal($event.data)"
+    ></app-datatable>
+</div>
+
+<app-modal #modal_herramientas>
+    <app-tabset
+        id="Herramientas"
+        #tabsetHerramientas
+        [tabs]="['FILTRAR', 'CREAR']"
+    >
+        <app-datatable
+            id="FILTRAR"
+            #datatablePrestamos
+            [buttons]="[{icon: 'cil-pencil', text: '', id: 2}]"
+            [keys]="['tipo_prestamo', 'nombre_completo', 'observacion', 'fec_prestamo']"
+            [titles]="['Tipo', 'prestatario', 'observación', 'fecha', 'opciones']"
+            (clickEmit)="load_update_prestamo($event)"
+        ></app-datatable>
+
+        <app-form-dynamic
+            id="CREAR"
+            #form_dynamic_prestamos
+            [inputs]="inputs_prestamos"
+            (reset)="close_modal()"
+            (submitEvent)="create_prestamo($event);"
+        ></app-form-dynamic>
+    </app-tabset>
+</app-modal>
+
+<app-alert #alert_herramientas></app-alert>
+<app-loading *ngIf="loading"></app-loading>

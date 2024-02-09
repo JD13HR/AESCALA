@@ -1,0 +1,210 @@
+<h2 class="text-lg md:text-xl text-gray-700 font-bold"><span class="cil-truck"></span> ZONA DE DESPACHOS</h2>         
+
+    <div class="col-span-3">
+        <form  
+            [formGroup]="form_despachos" 
+            (submit)="create_or_update_despachos()"
+            class="mt-5"
+        >
+            <div class="grid grid-cols-3 gap-4">
+                <div class="relative">
+                    <label for="input-proyecto" class="text-gray-700 text-sm hover:text-gray-400 cursor-pointer " ><span class="mr-1 cil-barcode"></span>Código</label>
+                    <input 
+                        #input_form
+                        id="input-codigo"
+                        type="text"
+                        formControlName="codigo"
+                        class="w-full block text-sm py-1.5 px-4 rounded-lg  border outline-none" 
+                    />
+                    <span *ngIf="input_form.classList.contains('invalid')" class="rounded-b-md rounded-l-md bg-red-600 text-white p-1 text-[.6rem] absolute -bottom-5 right-0"><span class="cil-warning mr-1"></span> ¡Incorrecto!</span>
+                </div>
+    
+                <div class="relative">
+                    <label for="input-proyecto" class="text-gray-700 text-sm hover:text-gray-400 cursor-pointer " ><span class="mr-1 cil-user"></span>Usuario</label>
+                    <select
+                        #input_select_user
+                        id="input-id_user"
+                        formControlName="id_user"
+                        class="w-full block text-sm py-1.5 px-4 rounded-lg  border outline-none" 
+                    >
+                        <option *ngFor="let usuario of datalist_users" value="{{usuario.id}}">{{usuario.nombre_completo}}</option>
+                    </select>
+                    <span *ngIf="input_select_proyecto.classList.contains('invalid')" class="rounded-b-md rounded-l-md bg-red-600 text-white p-1 text-[.6rem] absolute -bottom-5 right-0"><span class="cil-warning mr-1"></span> ¡Incorrecto!</span>
+                </div>
+
+                <div class="relative">
+                    <label for="input-proyecto" class="text-gray-700 text-sm hover:text-gray-400 cursor-pointer " ><span class="mr-1 cil-puzzle"></span>Tipo</label>
+                    <select
+                        #input_select_user
+                        id="input-tipo"
+                        formControlName="tipo"
+                        class="w-full block text-sm py-1.5 px-4 rounded-lg  border outline-none" 
+                    >
+                        <option value="Entregado">Entregado</option>
+                        <option value="Recibido">Recibido</option>
+                    </select>
+                    <span *ngIf="input_select_proyecto.classList.contains('invalid')" class="rounded-b-md rounded-l-md bg-red-600 text-white p-1 text-[.6rem] absolute -bottom-5 right-0"><span class="cil-warning mr-1"></span> ¡Incorrecto!</span>
+                </div>
+            </div>
+
+            <div class="mt-3 grid grid-cols-2 gap-4">
+                <div class="relative">
+                    <label for="input-proyecto" class="text-gray-700 text-sm hover:text-gray-400 cursor-pointer " ><span class="mr-1 cil-factory"></span>Proyecto</label>
+                    <select
+                        id="input-id_proyecto"
+                        formControlName="id_proyecto"
+                        #input_select_proyecto
+                        (change)="select_proyect()"
+                        class="w-full block text-sm py-1.5 px-4 rounded-lg  border outline-none" 
+                    >
+                        <option *ngFor="let proyecto of datalist_proyects" value="{{proyecto.id}}">{{proyecto.nombre_proyecto}}</option>
+                    </select>
+                    <span *ngIf="input_select_proyecto.classList.contains('invalid')" class="rounded-b-md rounded-l-md bg-red-600 text-white p-1 text-[.6rem] absolute -bottom-5 right-0"><span class="cil-warning mr-1"></span> ¡Incorrecto!</span>
+                </div>
+    
+                <div class="relative">
+                    <label for="input-proyecto" class="text-gray-700 text-sm hover:text-gray-400 cursor-pointer " ><span class="mr-1 cil-inbox"></span>Inventario</label>
+                    <select 
+                        id="select-inventario_selected"
+                        #input_select_inventario
+                        (change)="select_inventario()"
+                        formControlName="inventario_selected"
+                        class="w-full block text-sm py-1.5 px-4 rounded-lg  border outline-none"
+                    >
+                        <option *ngFor="let inventario of datalist_inventario" value="{{inventario.id}}">{{inventario.nombre_material}}</option>
+                        <option value="null">Sin inventario</option>
+                    </select>
+                    <span *ngIf="input_select_inventario.classList.contains('invalid')" class="rounded-b-md rounded-l-md bg-red-600 text-white p-1 text-[.6rem] absolute -bottom-5 right-0"><span class="cil-warning mr-1"></span> ¡Incorrecto!</span>
+                </div>
+            </div>
+
+            <div class="mt-3 flex">
+                <div (click)="handler_cancel_action()" class="select-none bg-gradient-to-tr hover:shadow-xl text-center cursor-pointer text-white p-1 w-48 rounded from-gray-600 to-gray-300">
+                    <span class="cil-x"></span> 
+                    Cancelar
+                </div>
+
+                <button type="submit" class="hover:shadow-xl  ml-auto text-white w-48 p-1 rounded bg-gradient-to-tr from-orange-600 to-orange-300">
+                    <span class="cil-cloud-upload"></span>
+                    Envíar
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div
+        #container_despachos_info
+        class="relative mt-2 bg-white rounded w-full h-[395px]  p-2"
+        *ngIf="inventarios_selected.length == 0 && !proyect_selected; else print_container_option"
+    >
+        <span class="bg-orange-500 text-white text-xl px-2 py-1 rounded absolute right-4 top-4  cil-warning"></span>
+        <div  [ngStyle]="{'height' : container_despachos_info.clientHeight+'px'}" class="transition duration-300 transform hover:-translate-x-1 hover:-translate-y-1 grid place-content-center text-center w-full border-spacing-2 border-2 border-dashed  border-orange-500">
+            <span class="text-4xl cil-truck text-orange-500"></span>
+            <h2 class="font-bold text-orange-500">DESPACHOS</h2>
+            <p class="text-justify max-w-md">En esta zona, puedes reportar todo el inventario que se le asigna a un proyecto, modificando sus entregas de material.</p>
+        </div>
+    </div>
+
+    <ng-template #print_container_option>
+        <div class="grid grid-cols-2 grid-flow-row rounded-md text-sm gap-3 mt-4">
+            <div>
+                <div *ngIf="proyect_selected" class="border-t-4 border-blue-500 bg-white p-2">
+                    <div class="flex mb-2">
+                        <h2 class="font-bold"><span class="cil-factory"></span> Proyecto: {{proyect_selected.nombre_proyecto}}</h2>
+                        <span class="ml-auto p-1 bg-gray-100 rounded-md">Estado: <span class="text-blue-500 font-bold">{{proyect_selected.nombre_estado}}</span></span>
+                    </div>
+            
+                    <div class="mt-4">
+                        <div>
+                            <p><span class="cil-barcode mr-2"></span>Código: {{proyect_selected.codigo_proyecto}}</p>
+                            <p><span class="cil-location-pin mr-2"></span>Departamento: {{proyect_selected.departamento}}</p>
+                            <p><span class="cil-factory mr-2"></span>Ciudad: {{proyect_selected.ciudad}}</p>
+                            <p><span class="cil-location-pin mr-2"></span>Dirección: {{proyect_selected.direccion}}</p>
+                            <p><span class="cil-user mr-2"></span>Cliente: {{proyect_selected.nombre_cliente}}</p>
+                            <p><span class="cil-user mr-2"></span>Teléfono: {{proyect_selected.telefono_cliente}}</p>
+                        </div>
+            
+                        <div class="mt-2">
+                            <div class="flex items-center">
+                                <div>
+                                    <h3 class="font-bold "><span class="text-2xl text-blue-500  ">{{proyect_selected.dias_restantes}}</span> días restantes</h3>
+                                    <p>La fecha para darle finalización al proyecto es <span class="font-bold">{{proyect_selected.fec_fin_estimado | date:'fullDate'}}</span></p>
+                                </div>
+                            </div>
+                
+                            <div class="mt-3">
+                                <p><span class="cil-calendar mr-1"></span>Fecha inicio : {{proyect_selected.fec_inicio | date:'shortDate'}}</p>
+                                <p><span class="cil-calendar mr-1"></span>Fecha final : {{proyect_selected.fec_fin_real | date:'shortDate'}}</p>
+                                <p class="text-{{proyect_selected.color}}-500"><span class="cil-calendar mr-1"></span>Fecha estimada : {{proyect_selected.fec_fin_estimado | date:'shortDate'}}</p>
+                            </div>
+                        </div>
+                
+                        <div class="mt-5">
+                            <h2 class="font-bold"><span class="cil-lightbulb mr-1"></span> Porcentaje: {{proyect_selected.porcentaje}}</h2>
+                        
+                            <div class="mt-2 w-full bg-gray-200 rounded-full h-1.5">
+                                <div class="bg-blue-500 h-1.5 rounded-full" [ngStyle]="{'width': proyect_selected.porcentaje}"></div>
+                            </div>
+                        </div>
+                    
+                       <div class="mt-5">
+                            <h3 class="font-bold"><span class="cil-money mr-2"></span> Precios </h3>
+                    
+                            <div class="grid grid-cols-2 mt-2">
+                                <div class="p-4 cursor-pointer border">
+                                    <span class="text-sm text-gray-500 font-semibold"> <span class="mr-1 cil-walk"></span> Mano de obra</span>
+                                    <h2 class="text-gray-800 font-bold tracking-wider">{{proyect_selected.pres_mano_obra | currency:'':'symbol':'1.0-0'}}</h2>
+                                </div>
+                                <div class="p-4 cursor-pointer border">
+                                    <span class="text-sm text-gray-500 font-semibold"> <span class="mr-1 cil-baseball"></span> Materiales</span>
+                                    <h2 class="text-gray-800 font-bold tracking-wider">{{proyect_selected.pres_materiales | currency:'':'symbol':'1.0-0'}}</h2>
+                    
+                                </div>
+                                <div class="p-4 cursor-pointer border">
+                                    <span class="text-sm text-gray-500 font-semibold">Otros</span>
+                                    <h2 class="text-gray-800 font-bold tracking-wider">{{proyect_selected.pres_otros | currency:'':'symbol':'1.0-0'}}</h2>
+                                </div>
+                                <div class="p-4 cursor-pointer border">
+                                    <span class="text-sm text-gray-500 font-semibold"><span class="mr-1 cil-graph"></span> Total</span>
+                                    <h2 class="text-gray-800 font-bold tracking-wider">{{proyect_selected.total | currency:'':'symbol':'1.0-0'}}</h2>
+                                </div>
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+        
+            <div>
+                <div *ngIf="inventarios_selected.length >= 1">
+                    <div  class="flex flex-col gap-2 overflow-auto">
+                        <div *ngFor="let inventario of inventarios_selected" class="bg-white p-2 border-t-4" [ngClass]="inventario.cantidad >=1 ? 'border-red-500' : 'border-gray-200'">
+                            <div class="flex items-center">
+                                <p class="font-bold">{{inventario.nombre_material | uppercase}}</p>
+                                <div class="ml-auto flex gap-2">
+                                    <button type="button" (click)="delete_inventario(inventario)" ><span class="cil-trash text-red-500 rounded p-2 bg-slate-100"></span></button>
+                                    <p class="text-[10px] fond-bold rounded p-1 text-white" [ngClass]="inventario.cantidad >=1 ? 'bg-gradient-to-tr from-red-600 to-red-400' : 'bg-gray-500'">Und: {{inventario.cantidad}}</p>
+                                </div>
+                            </div>
+    
+                            <input 
+                                #input_form
+                                type="number"
+                                placeholder="Cantidad"
+                                id="input-proyecto"
+                                [(ngModel)]="inventario.cantidad_usuario"
+                                (change)="change_value_inventario(inventario)"
+                                class="w-full mt-2 text-sm py-1 px-4 rounded-lg  border outline-none" 
+                            />
+                            <small>{{inventario.descripccion}}</small>
+    
+                            <div class="bg-gradient-to-r from-slate-200  to-slate-100 rounded p-2 w-full mt-2">
+                                <p class="font-medium">{{inventario.valor_unidad | currency:'':'symbol':'1.0-0'}} * {{inventario.cantidad_usuario}} = <b class="text-red-500">{{inventario.valor_unidad*inventario.cantidad_usuario | currency:'':'symbol':'1.0-0'}}</b></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+<app-alert #alert_despachos></app-alert>
+<app-loading *ngIf="loading"></app-loading>

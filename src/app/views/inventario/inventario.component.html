@@ -1,0 +1,31 @@
+<div>
+    <datalist id="datalist_unidades">
+        <option *ngFor="let unidad of list_unidades" value="{{unidad.unidades}}">
+    </datalist>
+
+    <div class="flex">
+        <span [ngClass]="!state_edith ? 'bg-orange-600' : 'bg-red-600'" class="ml-auto p-2 rounded-lg text-sm text-white font-semibold" id="toltipo-info">
+            {{!state_edith ? 'CREAR' : 'EDITAR'}}
+        </span>
+    </div>
+
+    <app-form-dynamic
+        #form_dynamic
+        [inputs]="inputs"
+        (reset)="state_edith = false; id_update = ''"
+        (submitEvent)="createUpdateInventario($event)"
+    ></app-form-dynamic>
+
+    <br>
+
+    <app-datatable
+        #datatableInventario
+        (clickEmit)="handlerEdith($event.data)"
+        [buttons]="[{icon: 'cil-pencil', text: '', id: 2}]"
+        [keys]="['nombre_material', 'cantidad', 'cantidad_min', 'valor_unidad', 'unidades']"
+        [titles]="['material', 'stock', 'stock mínimo', 'valor', 'tipo', 'opciones']"
+    ></app-datatable>
+</div>
+
+<app-alert #alert_inventario></app-alert>
+<app-loading *ngIf="loading"></app-loading>

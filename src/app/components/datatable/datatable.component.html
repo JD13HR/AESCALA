@@ -1,0 +1,39 @@
+<div class="w-full mx-auto">
+	<div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+		<div class="p-4">
+			<label for="table-search" class="sr-only">Search</label>
+			<div class="relative mt-1">
+				<div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <span class="cil-search text-lg text-gray-500 dark:text-gray-400"></span>
+				</div>
+				<input type="search" [(ngModel)]="search_input" (keyup)="search()" id="table-search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Buscar elementos">
+            </div>
+		</div>
+
+        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+            <thead class="w-full text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                    <th *ngFor="let title of titles" scope="col" class="px-6 py-3">{{title}}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of renderDataTable | async"  class="border-b dark:bg-gray-800 dark:border-gray-700  dark:hover:bg-gray-600s {{item?.styleClassTr?.length >= 1 ? item?.styleClassTr + ' hover:bg-opacity-40' : 'hover:bg-slate-50'}}" id="datatable-body" >
+                    <!-- <td class="w-4 p-4">
+                        <div class="flex items-center">
+                            <input id="checkbox-table-search-1" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                            <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
+                        </div>
+                    </td> -->
+                    <!-- <th #key_unique_datatable_item *ngFor="let key of keys" scope="row" [ngClass]="{'whitespace-nowrap': key_unique_datatable_item.offsetWidth < 500}" class="px-6 py-4 font-medium text-gray-900 dark:text-white w-full"> -->
+                    <th #key_unique_datatable_item *ngFor="let key of keys" scope="row" [ngClass]="{'whitespace-nowrap': key_unique_datatable_item.offsetWidth < 500}" class="px-6 py-4 font-medium text-gray-900 dark:text-white w-full hover:text-gray-900 ">
+                        {{item[key]}}
+                    </th>
+
+                    <td  class="px-6 py-4 flex gap-6 justify-center">
+                        <span *ngFor="let button of buttons" (click)="output_click({button, data: item})"  class="{{button.icon}} {{button.class}} text-lg hover:text-orange-600 cursor-pointer "></span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+	</div>
+</div>

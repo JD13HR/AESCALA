@@ -1,0 +1,15 @@
+.animation-datatable{
+    transition: background 1s;
+    animation-duration: 1s;
+    animation-name: degraded;
+}
+
+@keyframes degraded {
+    from {
+        @apply bg-orange-500
+    }
+
+    to {
+        @apply bg-white 
+    }
+}

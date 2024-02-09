@@ -1,0 +1,195 @@
+<div>
+    <datalist id="datalist_tipo_finanzas">
+        <option value="Gasto">Gasto</option>
+        <option value="Ingreso">Ingreso</option>
+    </datalist>
+
+    <div>
+        <app-tabset
+            id="finanzas"
+            (changeTab)="validateChangeTabEstado($event)"
+            [tabs]="['INGRESO | EGRESO', 'COTIZACIONES', 'ESTADO DEL PROYECTO']"
+        >
+            <div id="INGRESO | EGRESO">
+                <app-tabset
+                    id="ingreso_egreso"
+                    #tabset_ingreso_egreso
+                    order="flex-row-reverse"
+                    [tabs]="['LISTAR FINANZAS', 'CREAR INGRESO | EGRESO']"
+                >
+                    <div id="LISTAR FINANZAS">
+                        <div class="mb-5 mt-5">
+                            <h3 class="text-lg text-gray-700 font-bold"><span class="cil-money mr-2"></span> REPORTE DE MATERIALES </h3>
+                    
+                            <div class="grid grid-cols-2 mt-2">
+                                <div class="p-4 cursor-pointer border">
+                                    <span class="text-sm text-gray-500 font-semibold"> <span class="mr-1 cil-caret-bottom"></span>Gasto</span>
+                                    <p><span class="text-sm text-gray-500">Total materiales Entregados</span></p>
+                                    <h2 class="text-gray-800 font-bold tracking-wider">{{proyecto?.material[1]?.valor ?? 0 | currency:'':'symbol':'1.0-0'}}</h2>
+                                </div>
+                                <div class="p-4 cursor-pointer border">
+                                    <span class="text-sm text-gray-500 font-semibold"> <span class="mr-1 cil-caret-top"></span> Ingreso</span>
+                                    <p><span class="text-sm text-gray-500">Total materiales Devueltos</span></p>
+                                    <h2 class="text-gray-800 font-bold tracking-wider">{{proyecto?.material[0]?.valor ?? 0 | currency:'':'symbol':'1.0-0'}}</h2>
+                                </div>
+                            </div>
+                        </div>
+        
+                        <app-datatable
+                            #datatable_finanzas
+                            [buttons]="[{icon: 'cil-pencil', text: '', id: 2}, {icon: 'cil-trash', text: '', id: 3, class: 'text-red-500'}]"
+                            [keys]="['tipo','concepto', 'valor', 'createdAt']"
+                            [titles]="['tipo', 'concepto', 'valor', 'fecha creación', 'opciones']"
+                            (clickEmit)="$event.button.id == 2 ? handler_update_cotizacion($event.data) : handler_delete_cotizacion($event.data)"
+                        ></app-datatable>
+                    </div>
+                    <div id="CREAR INGRESO | EGRESO">
+                        <!-- <div class="flex text-xs">
+                            <span class="ml-auto p-1 rounded-md bg-orange-600 text-white">{{update_state ? 'ACTUALIZAR' : 'CREAR'}}</span>
+                        </div> -->
+                        <app-form-dynamic
+                            #form_dynamic_finanzas
+                            [inputs]="inputs_finanzas"
+                            (reset)="close_modal()"
+                            (submitEvent)="create_update_cotizacion($event)"
+                        ></app-form-dynamic>
+                    </div>
+                </app-tabset>
+            </div>
+
+            <div id="COTIZACIONES">
+                <datalist id="datalist_proyects">
+                    <option *ngFor="let proyect of datalist_proyects" value="{{proyect.title}}"></option>
+                </datalist>
+            
+                <datalist id="datalist_inventario">
+                    <option *ngFor="let inventario of datalist_inventario" value="{{inventario.title}}"></option>
+                </datalist>
+
+                <app-tabset
+                    id="cotizaciones"
+                    #tabset_cotizaciones
+                    (changeTab)="getComparativo($event)"
+                    order="flex-row-reverse"
+                    [tabs]="['LISTA COTIZACIONES', 'INGRESAR COTIZACIONES', 'COMPARATIVO']"
+                >
+                    <div id="LISTA COTIZACIONES" class="mt-4">
+                        <app-datatable
+                            #datatable_cotizaciones
+                            [buttons]="[{icon: 'cil-pencil', text: '', id: 2}, {icon: 'cil-trash', text: '', id: 1, class: 'text-red-500'}]"
+                            [keys]="['nombre_material','cantidad','valor_unidad','createdAt']"
+                            [titles]="['material', 'cantidad', 'valor (und)', 'fecha de creación','opciones']"
+                            (clickEmit)="$event.button.id == 1 ? delete_cotizacion($event.data) : handle_update_cotizacion($event.data)"
+                        ></app-datatable>
+                    </div>
+
+                    <app-form-dynamic
+                        id="INGRESAR COTIZACIONES"
+                        #form_dynamic_cotizaciones
+                        [inputs]="inputs_cotizaciones"
+                        (reset)="close_modal(); handler_reset()"
+                        (submitEvent)="create_or_update($event);"
+                    ></app-form-dynamic>
+
+                    <div id="COMPARATIVO">
+                        <app-datatable
+                            #datatable_comparativo
+                            [keys]="['nombre_material','cant_cotizacion','cant_despachos']"
+                            [titles]="['material', 'cotizaciones', 'despachos']"
+                        ></app-datatable>
+                    </div>
+                </app-tabset>
+            </div>
+
+            <div id="ESTADO DEL PROYECTO">
+                <div class="flex gap-3 flex-col">
+                    <div class="my-3">
+                        <h3 class="text-base text-gray-700 font-bold"><span class="cil-money mr-2"></span> PRESUPUESTOS </h3>
+
+                        <div class="grid grid-cols-4 mt-2">
+                            <div class="p-4 cursor-pointer border">
+                                <span class="text-sm text-gray-500 font-semibold"> <span class="mr-1 cil-walk"></span> Mano de obra</span>
+                                <h2 class="text-gray-800 font-bold tracking-wider">{{proyecto.pres_mano_obra | currency:'':'symbol':'1.0-0'}}</h2>
+                            </div>
+                            <div class="p-4 cursor-pointer border">
+                                <span class="text-sm text-gray-500 font-semibold"> <span class="mr-1 cil-baseball"></span> Materiales</span>
+                                <h2 class="text-gray-800 font-bold tracking-wider">{{proyecto.pres_materiales | currency:'':'symbol':'1.0-0'}}</h2>
+
+                            </div>
+                            <div class="p-4 cursor-pointer border">
+                                <span class="text-sm text-gray-500 font-semibold">Otros</span>
+                                <h2 class="text-gray-800 font-bold tracking-wider">{{proyecto.pres_otros | currency:'':'symbol':'1.0-0'}}</h2>
+                            </div>
+                            <div class="p-4 cursor-pointer border">
+                                <span class="text-sm text-gray-500 font-semibold"><span class="mr-1 cil-graph"></span> Total</span>
+                                <h2 class="text-gray-800 font-bold tracking-wider">{{proyecto.total | currency:'':'symbol':'1.0-0'}}</h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="w-full">
+                        <h3 class="text-base text-gray-700 font-bold"><span class="cil-truck mr-2"></span> MATERIALES </h3>
+                        <div class="bg-slate-50 rounded flex p-2 mt-4 gap-5">
+                            <p><span class="cil-factory mr-2"></span>Actual: {{proyecto.total_actual_material | currency:'':'symbol':'1.0-0'}}</p>
+                            <p class="ml-auto"><span class="cil-factory mr-2"></span>Presupuesto: {{proyecto.pres_materiales | currency:'':'symbol':'1.0-0'}}</p>
+                            <p [ngClass]="{'text-red-500': proyecto.total_materiales < 0}"><span class="cil-factory mr-2"></span>Promedio: {{proyecto.total_materiales | currency:'':'symbol':'1.0-0'}}</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 mt-2">  
+                            <div class="p-2 overflow-auto">
+                                <h3 class="font-semibold"><span class="cil-plus mr-1 text-green-600"></span>DEVUELTOS</h3>
+                                <h4 class="text-right text-green-600">{{proyecto?.material[0]?.valor ?? 0 | currency:'':'symbol':'1.0-0'}}</h4>
+                            </div>
+                            <div class="p-2 overflow-auto">
+                                <h3 class="font-semibold"><span class="cil-minus mr-1 text-red-600"></span>ENTREGADOS</h3>
+                                <h4 class="text-right text-red-600">{{proyecto?.material[1]?.valor ?? 0 | currency:'':'symbol':'1.0-0'}}</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="w-full">
+                        <h3 class="text-base text-gray-700 font-bold"><span class="cil-money mr-2"></span> FINANZAS </h3>
+                        <div class="bg-slate-50 rounded flex gap-5 p-2">
+                            <p><span class="cil-factory mr-2"></span>Actual: {{proyecto.total_actual_finanzas | currency:'':'symbol':'1.0-0'}}</p>
+                            <p class="ml-auto"><span class="cil-factory mr-2"></span>Presupuesto: {{proyecto.total_proyecto_finanzas | currency:'':'symbol':'1.0-0'}}</p>
+                            <p [ngClass]="{'text-red-500': proyecto.total_finanzas < 0}"><span class="cil-factory mr-2"></span>Promedio: {{proyecto.total_finanzas | currency:'':'symbol':'1.0-0'}}</p>
+                        </div>
+
+                        <div class="grid grid-cols-2 mt-2" *ngIf="data_finanzas.Ingreso">  
+                            <div class="p-2">
+                                <h3 class="font-semibold"><span class="cil-plus mr-1 text-green-600"></span> INGRESOS</h3>
+                                <h4 class="text-right text-green-600">{{data_finanzas.Ingreso.Ingreso | currency:'':'symbol':'1.0-0'}}</h4>
+
+                                <div class="flex gap-2 mt-2 flex-col">
+                                    <div class="rounded bg-slate-100 flex p-2" *ngFor="let ingreso of data_finanzas.Ingreso.values">
+                                        <p>{{ingreso.concepto}}</p>
+                                        <p class="ml-auto">{{ingreso.valor | currency:'':'symbol':'1.0-0'}}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-2">
+                                <h3 class="font-semibold"><span class="cil-plus mr-1 text-red-600"></span> GASTOS</h3>
+                                <h4 class="text-right text-red-600">{{data_finanzas.Gasto.Gasto | currency:'':'symbol':'1.0-0'}}</h4>
+
+                                <div class="flex gap-2 mt-2 flex-col">
+                                    <div class="rounded bg-slate-100 flex p-2" *ngFor="let gasto of data_finanzas.Gasto.values">
+                                        <p>{{gasto.concepto}}</p>
+                                        <p class="ml-auto">{{gasto.valor | currency:'':'symbol':'1.0-0'}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+        </app-tabset>
+    </div>
+</div>
+
+<app-alert #alert_finanzas></app-alert>
+<app-loading *ngIf="loading"></app-loading>

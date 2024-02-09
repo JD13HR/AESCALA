@@ -1,0 +1,16 @@
+<div>
+    <nav class="flex {{order}}">
+        <button 
+            *ngFor="let tab_for of tabs"
+            [ngClass]="{'border-b-2 border-orange-500 text-orange-500 font-medium': tab_for == tab}" 
+            class="text-sm py-3 px-3 block hover:text-orange-500 focus:outline-none text-gray-600" 
+            (click)="handler_change_tab(tab_for)"
+        >
+            {{tab_for | uppercase}}
+        </button>
+    </nav>
+
+    <div id="content-tabset-{{id}}">
+        <ng-content></ng-content>
+    </div>
+</div>
